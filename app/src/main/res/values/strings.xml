@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">VibroCalc</string>
+    <string name="mb_sel_butt">Mano Braccio</string>
+    <string name="ci_sel_butt">Corpo Intero</string>
+    <string name="ci_ns_sel_butt">Corpo Intero(ns)</string>
+    <string name="help_scelta_calcolo">Scegli la modalità di calcolo</string>
+    <string name="go_back">Indietro</string>
+    <string name="go_forward">Avanti</string>
+    <string name="action_settings">Impostazioni</string>
+
+    <string name="titolo_activity_mansione">MANSIONE</string>
+    <string name="titolo_activity_strumento">STRUMENTO</string>
+</resources>

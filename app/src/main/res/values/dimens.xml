@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="scelta_calc_title">55dp</dimen>
+    <dimen name="calc_butt_text_size">20dp</dimen>
+    <dimen name="margin_bottom_appBar">48dp</dimen>
+    <dimen name="activity_title_margin_top">30dp</dimen>
+    <dimen name="activity_title_font_size">40dp</dimen>
+    <dimen name="strumento_text_font">25dp</dimen>
+</resources>
