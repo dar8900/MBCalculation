@@ -25,8 +25,6 @@ public class MainActivity extends AppCompatActivity
         mbCalc = findViewById(R.id.mbsel_butt);
         ciCalc = findViewById(R.id.cisel_butt);
         ciNsCalc = findViewById(R.id.ciNSsel_butt);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         Log.i(TAG, "Creo l'activity MainActivity");
     }
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("scelta_calcolo", "MB");
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
-        onPause();
+        onStop();
     }
 
     public void CiSel(View v)
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("scelta_calcolo", "CI");
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
-        onPause();
+        onStop();
     }
 
     public void CiNsSel(View v)
@@ -89,32 +87,7 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("scelta_calcolo", "CI NS");
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
-        onPause();
+        onStop();
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu)
-//    {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_calcolo, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings)
-//        {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }

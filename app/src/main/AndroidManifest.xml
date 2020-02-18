@@ -9,8 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DescribeInstrument"></activity>
-        <activity android:name=".DescribeMansion"></activity>
+        <activity
+            android:name=".Calcolo"
+            android:label="@string/title_activity_calcolo"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".DescribeInstrument" />
+        <activity android:name=".DescribeMansion" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/button_border"
-                android:text="strumento"/>
+                android:text="calcolo"/>
         </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
     <RelativeLayout

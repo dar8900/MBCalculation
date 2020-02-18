@@ -10,4 +10,5 @@
 
     <string name="titolo_activity_mansione">MANSIONE</string>
     <string name="titolo_activity_strumento">STRUMENTO</string>
+    <string name="title_activity_calcolo">Calcolo</string>
 </resources>

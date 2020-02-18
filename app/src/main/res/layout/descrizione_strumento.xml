@@ -17,14 +17,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:background="@drawable/button_border"
-                android:text="mansione"/>
-            <Button
-                android:onClick="goForward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/button_border"
                 android:text="calcolo"/>
+<!--            <Button-->
+<!--                android:onClick="goForward"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:background="@drawable/button_border"-->
+<!--                android:text="calcolo"/>-->
         </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

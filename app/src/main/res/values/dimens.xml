@@ -6,4 +6,6 @@
     <dimen name="activity_title_margin_top">30dp</dimen>
     <dimen name="activity_title_font_size">40dp</dimen>
     <dimen name="strumento_text_font">25dp</dimen>
+    <dimen name="cell_xyz_width">85dp</dimen>
+    <dimen name="cell_xyz_high">70dp</dimen>
 </resources>

@@ -79,16 +79,27 @@ public class DescribeMansion extends AppCompatActivity
 
     public void goForward(View v)
     {
-        if(!IsTextEmpty(nomeMans) && !IsTextEmpty(descrMans))
+        if(!IsTextEmpty(nomeMans) && !IsTextEmpty(descrMans) && !Dbg)
         {
-            Intent toDescribeInstrument = new Intent(DescribeMansion.this, DescribeInstrument.class);
+            Intent toCalcolo = new Intent(DescribeMansion.this, Calcolo.class);
             Bundle bundle = new Bundle();
             bundle.putString("calcolo", CalcoloScelto);
             bundle.putString("nome_mansione", nomeMans.getText().toString());
             bundle.putString("descrizione_mansione", descrMans.getText().toString());
-            toDescribeInstrument.putExtra("calcolo+mansione", bundle);
-            startActivity(toDescribeInstrument);
-            onPause();
+            toCalcolo.putExtra("calcolo+mansione", bundle);
+            startActivity(toCalcolo);
+            onStop();
+        }
+        else if(Dbg)
+        {
+            Intent toCalcolo = new Intent(DescribeMansion.this, Calcolo.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("calcolo", CalcoloScelto);
+            bundle.putString("nome_mansione", "N.A.");
+            bundle.putString("descrizione_mansione", "N.A.");
+            toCalcolo.putExtra("calcolo+mansione", bundle);
+            startActivity(toCalcolo);
+            onStop();
         }
         else
         {
