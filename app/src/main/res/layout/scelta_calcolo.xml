@@ -49,6 +49,16 @@
             android:onClick="CiNsSel"
             android:text="@string/ci_ns_sel_butt"
             android:textSize="@dimen/calc_butt_text_size" />
+        <Button
+            android:id="@+id/closeMainAct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ciNSsel_butt"
+            android:layout_centerInParent="true"
+            android:onClick="closeMainAct"
+            android:layout_marginTop="15dp"
+            android:text="Chiudi App"
+            android:textSize="15dp" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -17,25 +17,39 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class Calcolo extends AppCompatActivity
 {
     static final int MAX_INSTRUMENT = 10;
+    static final int MB_CALC = 0;
+    static final int CI_CALC = 1;
+    static final int CI_NS_CALC = 2;
+
     private boolean Dbg = true;
     private boolean AddingInstrument = false;
     private static final String TAG = "MyActivity";
     private static final String DBG = "DebugLog";
-    private String CalcoloScelto, NomeMansione, DescrizioneMansione;
+    private int CalcoloScelto = 3;
+    private String NomeMansione, DescrizioneMansione;
 //    private String NomeStrumento, TipoStrumento, ModelloStrumento, MatricolaStrumento;
     private float[][] x_val = new float[3][MAX_INSTRUMENT];
     private float[][] y_val = new float[3][MAX_INSTRUMENT];
     private float[][] z_val = new float[3][MAX_INSTRUMENT];
+    private float[] x_avg_val = new float[MAX_INSTRUMENT];
+    private float[] y_avg_val = new float[MAX_INSTRUMENT];
+    private float[] z_avg_val = new float[MAX_INSTRUMENT];
+    private float[] x_avg_dev_std_val = new float[MAX_INSTRUMENT];
+    private float[] y_avg_dev_std_val = new float[MAX_INSTRUMENT];
+    private float[] z_avg_dev_std_val = new float[MAX_INSTRUMENT];
     private float[] x_max = new float[MAX_INSTRUMENT];
     private float[] y_max = new float[MAX_INSTRUMENT];
     private float[] z_max = new float[MAX_INSTRUMENT];
     private float[] xyz_max_avg_dev_std = new float[MAX_INSTRUMENT];
     private float[] dev_std_max_avg = new float[MAX_INSTRUMENT];
+    private float[] EsposizioniSingole = new float[MAX_INSTRUMENT];
+    private float EsposizioneTotale;
     private int  durata_turno = 480;
     private int[] durata_compl = new int[MAX_INSTRUMENT];
 
@@ -52,7 +66,7 @@ public class Calcolo extends AppCompatActivity
     String[] Modello_strumenti = new String[MAX_INSTRUMENT];
     String[] Tipo_strumenti = new String[MAX_INSTRUMENT];
     String[] Matricola_strumenti = new String[MAX_INSTRUMENT];
-    int N_StrumentiAttuali = 0;
+    int N_StrumentiAttuali = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,10 +76,11 @@ public class Calcolo extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.calcoloToolbar);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        MakeSnackBar("Aggiungere uno strumento dal menu per iniziare", Snackbar.LENGTH_LONG);
 
         Intent fromMansione = getIntent();
         Bundle bundle1 = fromMansione.getBundleExtra("calcolo+mansione");
-        CalcoloScelto = bundle1.getString("calcolo", "N.A.");
+        CalcoloScelto = bundle1.getInt("calcolo", 3);
         NomeMansione = bundle1.getString("nome_mansione", "N.A.");
         DescrizioneMansione = bundle1.getString("descrizione_mansione", "N.A.");
 
@@ -75,32 +90,50 @@ public class Calcolo extends AppCompatActivity
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
-                if (!hasFocus)
+                if(N_StrumentiAttuali >= 0)
                 {
-                    int numero = 0;
-                    try
+                    if (!hasFocus)
                     {
-                        numero = Integer.parseInt(tempoCom.getText().toString());
+                        int numero = 0;
+                        int durataTot = 0;
+                        try
+                        {
+                            numero = Integer.parseInt(tempoCom.getText().toString());
+                            durata_compl[N_StrumentiAttuali] = numero;
+                            for(int cnt = 0; cnt < N_StrumentiAttuali + 1; cnt++)
+                                durataTot += durata_compl[cnt];
+                            if(durataTot > durata_turno)
+                            {
+                                MakeToast("Si è superato la durata del turno di lavoro");
+                                durata_compl[N_StrumentiAttuali] = 0;
+                            }
+                            else
+                                durata_compl[N_StrumentiAttuali] = numero;
+                        } catch (NumberFormatException e)
+                        {
+                            MakeToast("Inserire un numero tra 1 e " + Integer.toString(durata_turno));
+                        }
+                        if (numero > durata_turno)
+                        {
+                            MakeToast("La durata supera il turno di lavoro");
+                            tempoCom.setText("");
+                        }
+                        else if (numero < 1)
+                        {
+                            MakeToast("Inserire un numero maggiore di 0");
+                            tempoCom.setText("");
+                        }
+                        else
+                        {
+                            durata_compl[N_StrumentiAttuali] = numero;
+                        }
+                        HideKeyboard(v);
                     }
-                    catch (NumberFormatException e)
-                    {
-                        MakeToast("Inserire un numero tra 1 e " + Integer.toString(durata_turno));
-                    }
-                    if (numero > durata_turno)
-                    {
-                        MakeToast("La durata supera il turno di lavoro");
-                        tempoCom.setText("");
-                    }
-                    else if(numero < 1)
-                    {
-                        MakeToast("Inserire un numero maggiore di 0");
-                        tempoCom.setText("");
-                    }
-                    else
-                    {
-                        durata_compl[N_StrumentiAttuali] = numero;
-                    }
+                }
+                else
+                {
                     HideKeyboard(v);
+                    MakeSnackBar("Aggiungere prima uno strumento dal menu", Snackbar.LENGTH_LONG);
                 }
             }
         });
@@ -138,19 +171,22 @@ public class Calcolo extends AppCompatActivity
         {
             Bundle fromNewStrumento = new Bundle();
             fromNewStrumento = data.getBundleExtra("strumento");
-
-            Nome_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("nome_strumento");
-            Modello_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("modello_strumento");
-            Tipo_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("tipo_strumento");
-            Matricola_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("matricola_strumento");
-            ids_strum[N_StrumentiAttuali] = N_StrumentiAttuali + 1;
-            MakeToast("Strumento numero " + Integer.toString(ids_strum[N_StrumentiAttuali]) + " aggiunto");
             N_StrumentiAttuali++;
             if(N_StrumentiAttuali >= MAX_INSTRUMENT)
             {
-                N_StrumentiAttuali = 0;
+                N_StrumentiAttuali = -1;
                 MakeToast("Raggiunto il massimo numero di strumenti possibili");
             }
+            else
+            {
+                Nome_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("nome_strumento");
+                Modello_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("modello_strumento");
+                Tipo_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("tipo_strumento");
+                Matricola_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("matricola_strumento");
+                ids_strum[N_StrumentiAttuali] = N_StrumentiAttuali + 1;
+                MakeToast("Strumento numero " + Integer.toString(ids_strum[N_StrumentiAttuali]) + " aggiunto");
+            }
+
 
         }
     }
@@ -200,6 +236,8 @@ public class Calcolo extends AppCompatActivity
     {
         boolean ret = false;
         int id = item.getItemId();
+        Intent guarda_exp = new Intent(Calcolo.this, LetturaEsposizione.class);
+        Bundle guarda_exp_bundle = new Bundle();
         switch(id)
         {
             case R.id.nuovo_turno:
@@ -209,9 +247,42 @@ public class Calcolo extends AppCompatActivity
             case R.id.add_instrument:
                 Intent new_instrument = new Intent(Calcolo.this, DescribeInstrument.class);
                 startActivityForResult(new_instrument, NUOVO_STRUMENTO_REQUEST_CODE);
+//                ClearAllData();
+                break;
+            case R.id.calcolo_singolo:
+                if(N_StrumentiAttuali >= 0)
+                {
+                    CalcSingleEsposition(CalcoloScelto, N_StrumentiAttuali);
+                    guarda_exp_bundle.putInt("tipo_calc", CalcoloScelto);
+                    guarda_exp_bundle.putInt("tipo_esp", 0);
+                    guarda_exp_bundle.putFloat("valore_esp", EsposizioniSingole[N_StrumentiAttuali]);
+                    guarda_exp.putExtra("bundle_esposizione", guarda_exp_bundle);
+                    startActivity(guarda_exp);
+                }
+                else
+                    MakeSnackBar("Aggiungere prima uno strumento", Snackbar.LENGTH_SHORT);
+                break;
+            case R.id.calcolo_totale:
+                if(N_StrumentiAttuali >= 0)
+                {
+                    CalcTotalEsposition();
+                    guarda_exp_bundle.putInt("tipo_esp", 1);
+                    guarda_exp_bundle.putInt("tipo_calc", CalcoloScelto);
+                    guarda_exp_bundle.putFloat("valore_esp", EsposizioneTotale);
+                    guarda_exp.putExtra("bundle_esposizione", guarda_exp_bundle);
+                    startActivity(guarda_exp);
+                }
+                else
+                    MakeSnackBar("Aggiungere prima uno strumento", Snackbar.LENGTH_SHORT);
                 break;
             case R.id.cancella_dati:
-                ClearAllData();
+                if(N_StrumentiAttuali >= 0)
+                {
+                    ClearAllData();
+                    MakeSnackBar("Dati strumento " + Integer.toString(ids_strum[N_StrumentiAttuali]) + " cancellati", Snackbar.LENGTH_SHORT);
+                }
+                else
+                    MakeSnackBar("Non si è aggiunto nessuno strumento", Snackbar.LENGTH_LONG);
                 break;
             case R.id.uscita:
                 finish();
@@ -222,17 +293,24 @@ public class Calcolo extends AppCompatActivity
 
     public void calcStatsData(View v)
     {
-        maxXYZText[0] = findViewById(R.id.max_x);
-        maxXYZText[1] = findViewById(R.id.max_y);
-        maxXYZText[2] = findViewById(R.id.max_z);
-        maxXYZText[3] = findViewById(R.id.max_xyz_avg);
-        maxXYZText[4] = findViewById(R.id.dev_std);
-        GetAllVariables();
-        maxXYZText[0].setText(Float.toString(x_max[N_StrumentiAttuali]));
-        maxXYZText[1].setText(Float.toString(y_max[N_StrumentiAttuali]));
-        maxXYZText[2].setText(Float.toString(z_max[N_StrumentiAttuali]));
-        maxXYZText[3].setText(Float.toString(xyz_max_avg_dev_std[N_StrumentiAttuali]));
-        maxXYZText[4].setText(Float.toString(dev_std_max_avg[N_StrumentiAttuali]));
+        if(N_StrumentiAttuali < 0)
+        {
+            MakeSnackBar("Aggiungere prima uno strumento dal menu", Snackbar.LENGTH_LONG);
+        }
+        else
+        {
+            maxXYZText[0] = findViewById(R.id.max_x);
+            maxXYZText[1] = findViewById(R.id.max_y);
+            maxXYZText[2] = findViewById(R.id.max_z);
+            maxXYZText[3] = findViewById(R.id.max_xyz_avg);
+            maxXYZText[4] = findViewById(R.id.dev_std);
+            GetAllVariables();
+            maxXYZText[0].setText(Float.toString(x_max[N_StrumentiAttuali]));
+            maxXYZText[1].setText(Float.toString(y_max[N_StrumentiAttuali]));
+            maxXYZText[2].setText(Float.toString(z_max[N_StrumentiAttuali]));
+            maxXYZText[3].setText(Float.toString(xyz_max_avg_dev_std[N_StrumentiAttuali]));
+            maxXYZText[4].setText(Float.toString(dev_std_max_avg[N_StrumentiAttuali]));
+        }
     }
 
     private boolean IsCellEmpty(EditText Text)
@@ -307,6 +385,7 @@ public class Calcolo extends AppCompatActivity
             if(z_val[cnt][N_StrumentiAttuali]  > z_max[N_StrumentiAttuali])
                 z_max[N_StrumentiAttuali] = z_val[cnt][N_StrumentiAttuali] ;
         }
+
         xyzAvg = (x_max[N_StrumentiAttuali] + y_max[N_StrumentiAttuali] + z_max[N_StrumentiAttuali])/3;
         xyzMaxArray[0] = x_max[N_StrumentiAttuali];
         xyzMaxArray[1] = y_max[N_StrumentiAttuali];
@@ -318,6 +397,53 @@ public class Calcolo extends AppCompatActivity
         sumQuadratic /= 3;
         dev_std_max_avg[N_StrumentiAttuali] = (float)Math.sqrt(sumQuadratic);
         xyz_max_avg_dev_std[N_StrumentiAttuali] = xyzAvg + dev_std_max_avg[N_StrumentiAttuali];
+    }
+
+    private void GetValoriPerEsposizione(int StrumentoAttuale)
+    {
+        int cnt = 0;
+        x_avg_val[StrumentoAttuale] = (float)0.0;
+        y_avg_val[StrumentoAttuale] = (float)0.0;
+        z_avg_val[StrumentoAttuale] = (float)0.0;
+
+        x_avg_dev_std_val[StrumentoAttuale] = (float)0.0;
+        y_avg_dev_std_val[StrumentoAttuale] = (float)0.0;
+        z_avg_dev_std_val[StrumentoAttuale] = (float)0.0;
+
+        for(cnt = 0; cnt < 3; cnt++)
+        {
+            x_avg_val[StrumentoAttuale] += x_val[cnt][StrumentoAttuale];
+            y_avg_val[StrumentoAttuale] += y_val[cnt][StrumentoAttuale];
+            z_avg_val[StrumentoAttuale] += z_val[cnt][StrumentoAttuale];
+        }
+        x_avg_val[StrumentoAttuale] /= 3;
+        y_avg_val[StrumentoAttuale] /= 3;
+        z_avg_val[StrumentoAttuale] /= 3;
+
+        float sumQuad = (float)0.0;
+        for(cnt = 0; cnt < 3; cnt++)
+        {
+            sumQuad += Math.pow(x_val[cnt][StrumentoAttuale] - x_avg_val[StrumentoAttuale], 2);
+        }
+        sumQuad /= 3;
+        x_avg_dev_std_val[StrumentoAttuale] = (float)Math.sqrt(sumQuad);
+
+        sumQuad = 0;
+        for(cnt = 0; cnt < 3; cnt++)
+        {
+            sumQuad += Math.pow(y_val[cnt][StrumentoAttuale] - y_avg_val[StrumentoAttuale], 2);
+        }
+        sumQuad /= 3;
+        y_avg_dev_std_val[StrumentoAttuale] = (float)Math.sqrt(sumQuad);
+
+        sumQuad = 0;
+        for(cnt = 0; cnt < 3; cnt++)
+        {
+            sumQuad += Math.pow(z_val[cnt][StrumentoAttuale] - z_avg_val[StrumentoAttuale], 2);
+        }
+        sumQuad /= 3;
+        z_avg_dev_std_val[StrumentoAttuale] = (float)Math.sqrt(sumQuad);
+
     }
 
     private void ClearAllData()
@@ -366,9 +492,61 @@ public class Calcolo extends AppCompatActivity
         tempoCom.setText("");
     }
 
+
+    private float CalcSingleEsposition(int TipoCalcolo, int StrumentoAttuale)
+    {
+        float AxyzAvg = (float)0.0;
+        GetValoriPerEsposizione(StrumentoAttuale);
+        switch (TipoCalcolo)
+        {
+            case MB_CALC:
+                AxyzAvg = (float)Math.sqrt(Math.pow(x_avg_val[StrumentoAttuale], 2) + Math.pow(y_avg_val[StrumentoAttuale], 2) + Math.pow(z_avg_val[StrumentoAttuale], 2));
+                break;
+            case CI_CALC:
+                AxyzAvg = (float)Math.max(1.4 * x_avg_val[StrumentoAttuale] + x_avg_dev_std_val[StrumentoAttuale], 1.4 * y_avg_val[StrumentoAttuale] + y_avg_dev_std_val[StrumentoAttuale]);
+                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + z_avg_dev_std_val[StrumentoAttuale]);
+                break;
+            case CI_NS_CALC:
+                AxyzAvg = (float)Math.max(x_avg_val[StrumentoAttuale] + x_avg_dev_std_val[StrumentoAttuale], y_avg_val[StrumentoAttuale] + y_avg_dev_std_val[StrumentoAttuale]);
+                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + z_avg_dev_std_val[StrumentoAttuale]);
+                break;
+            default:
+                break;
+        }
+        EsposizioniSingole[StrumentoAttuale] = AxyzAvg * (float)Math.sqrt(durata_compl[StrumentoAttuale]);
+        return AxyzAvg;
+    }
+
+
+    private void CalcTotalEsposition()
+    {
+        float SommaParz = 0;
+        for(int cnt = 0; cnt < N_StrumentiAttuali + 1; cnt++)
+        {
+            SommaParz += ((float)Math.pow(CalcSingleEsposition(CalcoloScelto, cnt), 2) * durata_compl[cnt]);
+        }
+        EsposizioneTotale = (float)Math.sqrt(SommaParz);
+//        switch (CalcoloScelto)
+//        {
+//            case MB_CALC:
+//                break;
+//            case CI_CALC:
+//                break;
+//            case CI_NS_CALC:
+//                break;
+//            default:
+//                break;
+//        }
+    }
+
     private void MakeToast(String msg)
     {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void MakeSnackBar(CharSequence msg, int Duration)
+    {
+        Snackbar.make(findViewById(R.id.calcolo_layout), msg, Duration).show();
     }
 
     public void HideKeyboard(View view)
@@ -384,8 +562,16 @@ public class Calcolo extends AppCompatActivity
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
-                if (!hasFocus)
+                if (N_StrumentiAttuali >= 0)
+                {
+                    if (!hasFocus)
+                        HideKeyboard(v);
+                }
+                else
+                {
                     HideKeyboard(v);
+                    MakeSnackBar("Aggiungere prima uno strumento dal menu", Snackbar.LENGTH_LONG);
+                }
             }
         });
     }

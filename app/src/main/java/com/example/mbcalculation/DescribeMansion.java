@@ -20,7 +20,7 @@ public class DescribeMansion extends AppCompatActivity
     private static final String DBG = "DebugLog";
     private EditText nomeMans;
     private EditText descrMans;
-    private String CalcoloScelto;
+    private int CalcoloScelto = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,7 +31,7 @@ public class DescribeMansion extends AppCompatActivity
         descrMans = (EditText)findViewById(R.id.descrizione_mansione);
         Intent fromSceltaCalcolo = getIntent();
         Bundle bundle = fromSceltaCalcolo.getBundleExtra("calcolo");
-        CalcoloScelto = bundle.getString("scelta_calcolo", "MB");
+        CalcoloScelto = bundle.getInt("scelta_calcolo", 3);
         Log.i(TAG, "Creazione DescribeMansion");
         if(Dbg)
         {
@@ -72,8 +72,8 @@ public class DescribeMansion extends AppCompatActivity
 
     public void goBack(View v)
     {
-        Intent toSceltaCalcolo = new Intent(DescribeMansion.this, MainActivity.class);
-        startActivity(toSceltaCalcolo);
+//        Intent toSceltaCalcolo = new Intent(DescribeMansion.this, MainActivity.class);
+//        startActivity(toSceltaCalcolo);
         finish();
     }
 
@@ -83,7 +83,7 @@ public class DescribeMansion extends AppCompatActivity
         {
             Intent toCalcolo = new Intent(DescribeMansion.this, Calcolo.class);
             Bundle bundle = new Bundle();
-            bundle.putString("calcolo", CalcoloScelto);
+            bundle.putInt("calcolo", CalcoloScelto);
             bundle.putString("nome_mansione", nomeMans.getText().toString());
             bundle.putString("descrizione_mansione", descrMans.getText().toString());
             toCalcolo.putExtra("calcolo+mansione", bundle);
@@ -94,7 +94,7 @@ public class DescribeMansion extends AppCompatActivity
         {
             Intent toCalcolo = new Intent(DescribeMansion.this, Calcolo.class);
             Bundle bundle = new Bundle();
-            bundle.putString("calcolo", CalcoloScelto);
+            bundle.putInt("calcolo", CalcoloScelto);
             bundle.putString("nome_mansione", "N.A.");
             bundle.putString("descrizione_mansione", "N.A.");
             toCalcolo.putExtra("calcolo+mansione", bundle);

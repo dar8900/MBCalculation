@@ -167,6 +167,7 @@
             </TableRow>
         </TableLayout>
 
+
         <Button
             android:id="@+id/calc_stat_data"
             android:layout_width="wrap_content"
@@ -291,7 +292,7 @@
                     android:inputType="numberDecimal"/>
             </TableRow>
         </TableLayout>
-
+            
         </RelativeLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

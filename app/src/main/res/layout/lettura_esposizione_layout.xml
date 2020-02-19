@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LetturaEsposizione"
+    android:background="@color/beige">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/titolo_mostra_esposizione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/activity_title_font_size"
+            android:text="ESPOSIZIONE"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/mostra_esposizione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.45"
+            android:layout_below="@+id/titolo_mostra_esposizione"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:textIsSelectable="true"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/mostra_esposizione"
+            android:text="Chiudi"
+            android:layout_marginTop="15dp"
+            android:onClick="closeMostraEsp"/>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

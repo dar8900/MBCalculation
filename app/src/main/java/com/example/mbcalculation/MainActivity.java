@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     {
         Intent startDescMansione = new Intent(MainActivity.this, DescribeMansion.class);
         Bundle bundle = new Bundle();
-        bundle.putString("scelta_calcolo", "MB");
+        bundle.putInt("scelta_calcolo", 0);
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
         onStop();
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     {
         Intent startDescMansione = new Intent(MainActivity.this, DescribeMansion.class);
         Bundle bundle = new Bundle();
-        bundle.putString("scelta_calcolo", "CI");
+        bundle.putInt("scelta_calcolo", 1);
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
         onStop();
@@ -84,10 +84,15 @@ public class MainActivity extends AppCompatActivity
     {
         Intent startDescMansione = new Intent(MainActivity.this, DescribeMansion.class);
         Bundle bundle = new Bundle();
-        bundle.putString("scelta_calcolo", "CI NS");
+        bundle.putInt("scelta_calcolo", 2);
         startDescMansione.putExtra("calcolo", bundle);
         startActivity(startDescMansione);
         onStop();
+    }
+    public void closeMainAct(View v)
+    {
+        finish();
+        System.exit(0);
     }
 
 }
