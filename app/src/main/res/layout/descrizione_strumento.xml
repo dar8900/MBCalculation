@@ -2,37 +2,15 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@color/teal">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:onClick="goBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/button_border"
-                android:text="calcolo"/>
-<!--            <Button-->
-<!--                android:onClick="goForward"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_alignParentRight="true"-->
-<!--                android:background="@drawable/button_border"-->
-<!--                android:text="calcolo"/>-->
-        </RelativeLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+    android:layout_height="match_parent"
+    android:background="@color/light_cyan">
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/margin_bottom_appBar">
+        android:clickable="true"
+        android:focusableInTouchMode="true">
         <TextView
             android:id="@+id/strument_title"
             android:layout_width="wrap_content"
@@ -43,11 +21,14 @@
             android:textSize="@dimen/activity_title_font_size"
             android:text="@string/titolo_activity_strumento"/>
         <TableLayout
+            android:id="@+id/table_descr_strumento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="150dp">
-            <TableRow>
+            android:layout_marginTop="150dp"
+            android:padding="15dp">
+            <TableRow
+                android:layout_marginBottom="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,12 +37,15 @@
                     android:textSize="@dimen/strumento_text_font"/>
                 <EditText
                     android:id="@+id/nome_strumento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
                     android:textAlignment="center"
-                    android:textSize="@dimen/strumento_text_font"/>
+                    android:textSize="@dimen/strumento_text_font"
+                    android:background="@drawable/button_border"/>
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,12 +54,15 @@
                     android:textSize="@dimen/strumento_text_font"/>
                 <EditText
                     android:id="@+id/modello_strumento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
                     android:textAlignment="center"
-                    android:textSize="@dimen/strumento_text_font"/>
+                    android:textSize="@dimen/strumento_text_font"
+                    android:background="@drawable/button_border"/>
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -84,11 +71,13 @@
                     android:textSize="@dimen/strumento_text_font"/>
                 <EditText
                     android:id="@+id/tipo_strumento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"/>
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:textAlignment="center"
+                    android:background="@drawable/button_border"/>
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_marginTop="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,13 +86,22 @@
                     android:textSize="@dimen/strumento_text_font"/>
                 <EditText
                     android:id="@+id/matricola_strumento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
                     android:textAlignment="center"
-                    android:textSize="@dimen/strumento_text_font"/>
+                    android:textSize="@dimen/strumento_text_font"
+                    android:background="@drawable/button_border"/>
             </TableRow>
 
         </TableLayout>
-
+        <Button
+            android:onClick="add_strumento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/table_descr_strumento"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="Aggiungi strumento"
+            android:textSize="20dp"/>
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

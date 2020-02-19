@@ -5,12 +5,12 @@
     <item
         android:id="@+id/calcolo_singolo"
         android:orderInCategory="3"
-        android:title="Calcola esposizione singola"
+        android:title="Esposizione singolo strumento"
         app:showAsAction="never" />
     <item
         android:id="@+id/calcolo_totale"
         android:orderInCategory="4"
-        android:title="Calcola esposizione totale"
+        android:title="Esposizione totale"
         app:showAsAction="never" />
     <item
         android:id="@+id/add_instrument"
@@ -20,12 +20,12 @@
     <item
         android:id="@+id/nuovo_turno"
         android:orderInCategory="1"
-        android:title="Inserire nuovo turno"
+        android:title="Nuova durata turno"
         app:showAsAction="never" />
     <item
         android:id="@+id/salva_mansione"
         android:orderInCategory="5"
-        android:title="Salva la mansione"
+        android:title="Salva la mansione attuale"
         app:showAsAction="never" />
     <item
         android:id="@+id/cancella_dati"
@@ -35,6 +35,6 @@
     <item
         android:id="@+id/uscita"
         android:orderInCategory="7"
-        android:title="Esci"
+        android:title="Esci dalla mansione attuale"
         app:showAsAction="never" />
 </menu>

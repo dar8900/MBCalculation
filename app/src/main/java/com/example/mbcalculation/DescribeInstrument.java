@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,19 +25,15 @@ public class DescribeInstrument extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.descrizione_strumento);
-//        Intent fromMansione = getIntent();
-//        Bundle bundle = fromMansione.getBundleExtra("calcolo+mansione");
-//        CalcoloScelto = bundle.getString("calcolo", "MB");
-//        NomeMansione = bundle.getString("nome_mansione", "rand");
-//        DescrizioneMansione = bundle.getString("descrizione_mansione", "something");
-
         nameInst = findViewById(R.id.nome_strumento);
         modInstr = findViewById(R.id.modello_strumento);
         typeInstr = findViewById(R.id.tipo_strumento);
         matrInstr = findViewById(R.id.matricola_strumento);
 
-
-
+        CheckHideKeyboard(nameInst);
+        CheckHideKeyboard(modInstr);
+        CheckHideKeyboard(typeInstr);
+        CheckHideKeyboard(matrInstr);
         Log.i(TAG, "On Create DescribeInstrument");
 
     }
@@ -72,14 +69,8 @@ public class DescribeInstrument extends AppCompatActivity
         Log.i(TAG, "On Destroy DescribeInstrument");
     }
 
-//    public void goBack(View v)
-//    {
-//        Intent toDescriviMansione = new Intent(DescribeInstrument.this, DescribeMansion.class);
-//        startActivity(toDescriviMansione);
-//        finish();
-//    }
 
-    public void goBack(View v)
+    public void add_strumento(View v)
     {
         if(!IsTextEmpty(nameInst) && !IsTextEmpty(modInstr) && !IsTextEmpty(typeInstr) && !IsTextEmpty(matrInstr))
         {
@@ -88,12 +79,8 @@ public class DescribeInstrument extends AppCompatActivity
             TipoStrumento = typeInstr.getText().toString();
             MatricolaStrumento = matrInstr.getText().toString();
 
-            Intent toCalcolo = new Intent(DescribeInstrument.this, Calcolo.class);
+            Intent toCalcolo = new Intent();
             Bundle bundle = new Bundle();
-
-//            bundle.putString("calcolo", CalcoloScelto);
-//            bundle.putString("nome_mansione", NomeMansione);
-//            bundle.putString("descrizione_mansione", DescrizioneMansione);
 
             bundle.putString("nome_strumento", NomeStrumento);
             bundle.putString("modello_strumento", ModelloStrumento);
@@ -101,7 +88,7 @@ public class DescribeInstrument extends AppCompatActivity
             bundle.putString("matricola_strumento", MatricolaStrumento);
 
             toCalcolo.putExtra("strumento", bundle);
-            startActivity(toCalcolo);
+            setResult(DescribeInstrument.RESULT_OK, toCalcolo);
             finish();
         }
         else
@@ -116,6 +103,25 @@ public class DescribeInstrument extends AppCompatActivity
             return true;
         else
             return false;
+    }
+
+    public void HideKeyboard(View view)
+    {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Calcolo.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void CheckHideKeyboard(final EditText Text)
+    {
+        Text.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (!hasFocus)
+                    HideKeyboard(v);
+            }
+        });
     }
 
     private void MakeToast(String msg)
