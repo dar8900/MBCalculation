@@ -109,7 +109,8 @@ public class Calcolo extends AppCompatActivity
                             }
                             else
                                 durata_compl[N_StrumentiAttuali] = numero;
-                        } catch (NumberFormatException e)
+                        }
+                        catch (NumberFormatException e)
                         {
                             MakeToast("Inserire un numero tra 1 e " + Integer.toString(durata_turno));
                         }
@@ -171,6 +172,13 @@ public class Calcolo extends AppCompatActivity
         {
             Bundle fromNewStrumento = new Bundle();
             fromNewStrumento = data.getBundleExtra("strumento");
+
+            if(N_StrumentiAttuali >= 0)
+            {
+                GetAllVariables();
+                ClearAllData();
+            }
+
             N_StrumentiAttuali++;
             if(N_StrumentiAttuali >= MAX_INSTRUMENT)
             {
@@ -402,6 +410,7 @@ public class Calcolo extends AppCompatActivity
     private void GetValoriPerEsposizione(int StrumentoAttuale)
     {
         int cnt = 0;
+        GetAllVariables();
         x_avg_val[StrumentoAttuale] = (float)0.0;
         y_avg_val[StrumentoAttuale] = (float)0.0;
         z_avg_val[StrumentoAttuale] = (float)0.0;
@@ -450,7 +459,6 @@ public class Calcolo extends AppCompatActivity
     {
         int cnt = 0;
 
-
         maxXYZText[0] = findViewById(R.id.max_x);
         maxXYZText[1] = findViewById(R.id.max_y);
         maxXYZText[2] = findViewById(R.id.max_z);
@@ -471,19 +479,11 @@ public class Calcolo extends AppCompatActivity
 
         for(cnt = 0; cnt < 3; cnt++)
         {
-            for(int s= 0; s < MAX_INSTRUMENT; s++)
-            {
-                x_val[cnt][s] = (float) 0.0;
-                y_val[cnt][s] = (float) 0.0;
-                z_val[cnt][s] = (float) 0.0;
-            }
             x_cells[cnt].setText("");
             y_cells[cnt].setText("");
             z_cells[cnt].setText("");
         }
-        x_max[N_StrumentiAttuali] = (float)0.0;
-        y_max[N_StrumentiAttuali] = (float)0.0;
-        z_max[N_StrumentiAttuali] = (float)0.0;
+
         for(cnt = 0; cnt < 5; cnt++)
         {
             maxXYZText[cnt].setText("");
@@ -496,6 +496,7 @@ public class Calcolo extends AppCompatActivity
     private float CalcSingleEsposition(int TipoCalcolo, int StrumentoAttuale)
     {
         float AxyzAvg = (float)0.0;
+        float prod_dev_std = (float)1.645;
         GetValoriPerEsposizione(StrumentoAttuale);
         switch (TipoCalcolo)
         {
@@ -503,17 +504,18 @@ public class Calcolo extends AppCompatActivity
                 AxyzAvg = (float)Math.sqrt(Math.pow(x_avg_val[StrumentoAttuale], 2) + Math.pow(y_avg_val[StrumentoAttuale], 2) + Math.pow(z_avg_val[StrumentoAttuale], 2));
                 break;
             case CI_CALC:
-                AxyzAvg = (float)Math.max(1.4 * x_avg_val[StrumentoAttuale] + x_avg_dev_std_val[StrumentoAttuale], 1.4 * y_avg_val[StrumentoAttuale] + y_avg_dev_std_val[StrumentoAttuale]);
-                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + z_avg_dev_std_val[StrumentoAttuale]);
+                AxyzAvg = (float)Math.max(1.4 * (x_avg_val[StrumentoAttuale] + (x_avg_dev_std_val[StrumentoAttuale] * prod_dev_std)), 1.4 * (y_avg_val[StrumentoAttuale] + (y_avg_dev_std_val[StrumentoAttuale] * prod_dev_std)));
+                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + (z_avg_dev_std_val[StrumentoAttuale] * prod_dev_std));
                 break;
             case CI_NS_CALC:
-                AxyzAvg = (float)Math.max(x_avg_val[StrumentoAttuale] + x_avg_dev_std_val[StrumentoAttuale], y_avg_val[StrumentoAttuale] + y_avg_dev_std_val[StrumentoAttuale]);
-                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + z_avg_dev_std_val[StrumentoAttuale]);
+                AxyzAvg = (float)Math.max(x_avg_val[StrumentoAttuale] + (x_avg_dev_std_val[StrumentoAttuale] * prod_dev_std), y_avg_val[StrumentoAttuale] + (y_avg_dev_std_val[StrumentoAttuale] * prod_dev_std));
+                AxyzAvg = (float)Math.max(AxyzAvg, z_avg_val[StrumentoAttuale] + (z_avg_dev_std_val[StrumentoAttuale] * prod_dev_std));
                 break;
             default:
                 break;
         }
-        EsposizioniSingole[StrumentoAttuale] = AxyzAvg * (float)Math.sqrt(durata_compl[StrumentoAttuale]);
+        float frac = (float)Math.sqrt((float)durata_compl[StrumentoAttuale] / (float)durata_turno);
+        EsposizioniSingole[StrumentoAttuale] = AxyzAvg * (float)Math.sqrt((float)durata_compl[StrumentoAttuale] / (float)durata_turno);
         return AxyzAvg;
     }
 
@@ -523,20 +525,9 @@ public class Calcolo extends AppCompatActivity
         float SommaParz = 0;
         for(int cnt = 0; cnt < N_StrumentiAttuali + 1; cnt++)
         {
-            SommaParz += ((float)Math.pow(CalcSingleEsposition(CalcoloScelto, cnt), 2) * durata_compl[cnt]);
+            SommaParz += ((float)Math.pow(CalcSingleEsposition(CalcoloScelto, cnt), 2) * ((float)durata_compl[cnt] / (float)durata_turno));
         }
         EsposizioneTotale = (float)Math.sqrt(SommaParz);
-//        switch (CalcoloScelto)
-//        {
-//            case MB_CALC:
-//                break;
-//            case CI_CALC:
-//                break;
-//            case CI_NS_CALC:
-//                break;
-//            default:
-//                break;
-//        }
     }
 
     private void MakeToast(String msg)

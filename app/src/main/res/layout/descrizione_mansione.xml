@@ -16,14 +16,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/button_border"
+                android:background="@color/teal"
                 android:text="@string/go_back"/>
             <Button
                 android:onClick="goForward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/button_border"
+                android:background="@color/teal"
                 android:text="calcolo"/>
         </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
