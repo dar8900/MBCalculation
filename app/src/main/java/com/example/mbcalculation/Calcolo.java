@@ -45,7 +45,6 @@ public class Calcolo extends AppCompatActivity
     private static final int OPEN_FILE_REQUEST_CODE = 41;
     private static final int SAVE_FILE_REQUEST_CODE = 42;
 
-    private boolean Dbg = true;
     private boolean AddingInstrument = false;
     private static final String TAG = "MyActivity";
     private static final String DBG = "DebugLog";
