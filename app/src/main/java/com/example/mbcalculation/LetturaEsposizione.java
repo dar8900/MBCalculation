@@ -35,7 +35,7 @@ public class LetturaEsposizione extends AppCompatActivity
         {
             case 0:
                 TitoloEsp.setText("ESPOSIZIONE SINGOLA");
-                TestoEsp.setText(Float.toString(Esposizione) + " m/s^2");
+                TestoEsp.setText(FormatFlToStr(Esposizione, 2) + " m/s^2");
                 if(TipoCalcolo == 0)
                 {
                     if (Esposizione < 2.5)
@@ -84,7 +84,7 @@ public class LetturaEsposizione extends AppCompatActivity
                 break;
             case 1:
                 TitoloEsp.setText("ESPOSIZIONE TOTALE");
-                TestoEsp.setText(Float.toString(Esposizione) + " m/s^2");
+                TestoEsp.setText(FormatFlToStr(Esposizione, 2) + " m/s^2");
                 if(TipoCalcolo == 0)
                 {
                     if (Esposizione < 2.5)
@@ -138,7 +138,13 @@ public class LetturaEsposizione extends AppCompatActivity
         }
     }
 
-
+    private String FormatFlToStr(float number, int howManyDigit)
+    {
+        String numStr = "", format = "";
+        format = "%." + howManyDigit + "f";
+        numStr = String.format(format, number);
+        return numStr;
+    }
 
     public void closeMostraEsp(View v)
     {

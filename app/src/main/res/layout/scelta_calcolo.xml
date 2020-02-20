@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/alice_blue"
+    android:background="@color/light_sky_blue"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -12,20 +13,24 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/scelta_calc_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="45dp"
             android:text="@string/app_name"
+            android:textIsSelectable="false"
             android:textSize="@dimen/scelta_calc_title"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/mbsel_butt"
+            style="@android:style/Widget.Material.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/scelta_calc_testo"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:onClick="MbSel"
             android:text="@string/mb_sel_butt"
             android:textSize="@dimen/calc_butt_text_size" />
@@ -61,20 +66,25 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/scelta_calc_testo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="330dp"
+            android:layout_below="@+id/scelta_calc_title"
+            android:layout_marginTop="20dp"
             android:text="@string/help_scelta_calcolo"
             android:textStyle="italic" />
 
-        <!--            TODO: inserire logo galileo    -->
+
         <ImageView
-            android:id="@+id/gali_logo_main_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="370dp"
+            android:layout_below="@id/closeMainAct"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/galileo_logo_foreground" />
+
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

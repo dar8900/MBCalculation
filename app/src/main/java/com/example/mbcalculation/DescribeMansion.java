@@ -95,8 +95,8 @@ public class DescribeMansion extends AppCompatActivity
             Intent toCalcolo = new Intent(DescribeMansion.this, Calcolo.class);
             Bundle bundle = new Bundle();
             bundle.putInt("calcolo", CalcoloScelto);
-            bundle.putString("nome_mansione", "N.A.");
-            bundle.putString("descrizione_mansione", "N.A.");
+            bundle.putString("nome_mansione", "DBGMans");
+            bundle.putString("descrizione_mansione", "DBGDescrMans");
             toCalcolo.putExtra("calcolo+mansione", bundle);
             startActivity(toCalcolo);
             onStop();

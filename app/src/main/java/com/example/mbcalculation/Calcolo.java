@@ -1,13 +1,17 @@
 package com.example.mbcalculation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.fonts.Font;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,13 +23,27 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class Calcolo extends AppCompatActivity
 {
+    static final boolean Dbg = true;
+
     static final int MAX_INSTRUMENT = 10;
     static final int MB_CALC = 0;
     static final int CI_CALC = 1;
     static final int CI_NS_CALC = 2;
+
+    private static final int CREATE_FILE_REQUEST_CODE = 40;
+    private static final int OPEN_FILE_REQUEST_CODE = 41;
+    private static final int SAVE_FILE_REQUEST_CODE = 42;
 
     private boolean Dbg = true;
     private boolean AddingInstrument = false;
@@ -164,38 +182,50 @@ public class Calcolo extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if((requestCode == NUOVO_TURNO_REQUEST_CODE) && (resultCode == Calcolo.RESULT_OK))
+        if(resultCode == Calcolo.RESULT_OK)
         {
-            durata_turno = data.getIntExtra("nuovo_turno_inserito", 480);
-        }
-        else if((requestCode == NUOVO_STRUMENTO_REQUEST_CODE) && (resultCode == Calcolo.RESULT_OK))
-        {
-            Bundle fromNewStrumento = new Bundle();
-            fromNewStrumento = data.getBundleExtra("strumento");
-
-            if(N_StrumentiAttuali >= 0)
+            if (requestCode == NUOVO_TURNO_REQUEST_CODE)
             {
-                GetAllVariables();
-                ClearAllData();
+                durata_turno = data.getIntExtra("nuovo_turno_inserito", 480);
             }
-
-            N_StrumentiAttuali++;
-            if(N_StrumentiAttuali >= MAX_INSTRUMENT)
+            else if (requestCode == NUOVO_STRUMENTO_REQUEST_CODE)
             {
-                N_StrumentiAttuali = -1;
-                MakeToast("Raggiunto il massimo numero di strumenti possibili");
+                Bundle fromNewStrumento = new Bundle();
+                fromNewStrumento = data.getBundleExtra("strumento");
+
+                if (N_StrumentiAttuali >= 0)
+                {
+                    GetAllVariables();
+                    ClearAllData();
+                }
+
+                N_StrumentiAttuali++;
+                if (N_StrumentiAttuali >= MAX_INSTRUMENT)
+                {
+                    N_StrumentiAttuali = -1;
+                    MakeToast("Raggiunto il massimo numero di strumenti possibili");
+                }
+                else
+                {
+                    Nome_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("nome_strumento");
+                    Modello_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("modello_strumento");
+                    Tipo_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("tipo_strumento");
+                    Matricola_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("matricola_strumento");
+                    ids_strum[N_StrumentiAttuali] = N_StrumentiAttuali + 1;
+                    MakeToast("Strumento numero " + Integer.toString(ids_strum[N_StrumentiAttuali]) + " aggiunto");
+                }
             }
-            else
+            else if (requestCode == CREATE_FILE_REQUEST_CODE)
             {
-                Nome_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("nome_strumento");
-                Modello_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("modello_strumento");
-                Tipo_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("tipo_strumento");
-                Matricola_strumenti[N_StrumentiAttuali] = fromNewStrumento.getString("matricola_strumento");
-                ids_strum[N_StrumentiAttuali] = N_StrumentiAttuali + 1;
-                MakeToast("Strumento numero " + Integer.toString(ids_strum[N_StrumentiAttuali]) + " aggiunto");
+                Uri fileResource = null;
+                fileResource = data.getData();
+                if (data != null)
+                {
+                    fileResource = data.getData();
+                    WriteInFile(fileResource);
+                }
+                MakeToast("File creato con successo");
             }
-
-
         }
     }
 
@@ -283,6 +313,23 @@ public class Calcolo extends AppCompatActivity
                 else
                     MakeSnackBar("Aggiungere prima uno strumento", Snackbar.LENGTH_SHORT);
                 break;
+            case R.id.salva_mansione:
+                if(N_StrumentiAttuali >= 0)
+                {
+                    String NomeFile = "";
+                    if(Dbg)
+                    {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+                        NomeFile = sdf.format(new Date());
+                    }
+                    else
+                        NomeFile = NomeMansione;
+
+                    CreateFile(NomeFile + ".csv");
+                }
+                else
+                    MakeSnackBar("Aggiungere prima uno strumento dal menu", Snackbar.LENGTH_SHORT);
+                break;
             case R.id.cancella_dati:
                 if(N_StrumentiAttuali >= 0)
                 {
@@ -313,11 +360,11 @@ public class Calcolo extends AppCompatActivity
             maxXYZText[3] = findViewById(R.id.max_xyz_avg);
             maxXYZText[4] = findViewById(R.id.dev_std);
             GetAllVariables();
-            maxXYZText[0].setText(Float.toString(x_max[N_StrumentiAttuali]));
-            maxXYZText[1].setText(Float.toString(y_max[N_StrumentiAttuali]));
-            maxXYZText[2].setText(Float.toString(z_max[N_StrumentiAttuali]));
-            maxXYZText[3].setText(Float.toString(xyz_max_avg_dev_std[N_StrumentiAttuali]));
-            maxXYZText[4].setText(Float.toString(dev_std_max_avg[N_StrumentiAttuali]));
+            maxXYZText[0].setText(FormatFlToStr(x_max[N_StrumentiAttuali], 2));
+            maxXYZText[1].setText(FormatFlToStr(y_max[N_StrumentiAttuali], 2));
+            maxXYZText[2].setText(FormatFlToStr(z_max[N_StrumentiAttuali], 2));
+            maxXYZText[3].setText(FormatFlToStr(xyz_max_avg_dev_std[N_StrumentiAttuali], 2));
+            maxXYZText[4].setText(FormatFlToStr(dev_std_max_avg[N_StrumentiAttuali], 2));
         }
     }
 
@@ -565,6 +612,72 @@ public class Calcolo extends AppCompatActivity
                 }
             }
         });
+    }
+
+    private String FormatFlToStr(float number, int howManyDigit)
+    {
+        String numStr = "", format = "";
+        format = "%." + howManyDigit + "f";
+        numStr = String.format(format, number);
+        return numStr;
+    }
+
+    private void CreateFile(String fileName)
+    {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        startActivityForResult(intent, CREATE_FILE_REQUEST_CODE);
+    }
+
+    private void SaveFile()
+    {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        startActivityForResult(intent, SAVE_FILE_REQUEST_CODE);
+    }
+
+    private void WriteInFile(Uri fileLocation)
+    {
+        try
+        {
+            if(N_StrumentiAttuali >= 0)
+            {
+                ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(fileLocation, "w");
+                FileOutputStream fileOutputStream = new FileOutputStream(pfd.getFileDescriptor());
+                String textContent = "";
+                textContent = "NOME,TIPO,MODELLO,MATRICOLA,ESPOSIZIONE_SINGOLA\n";
+                for (int cnt = 0; cnt < N_StrumentiAttuali + 1; cnt++)
+                {
+                    textContent += String.format("%s,%s,%s,%s,%s\n", Nome_strumenti[cnt], Tipo_strumenti[cnt],
+                            Modello_strumenti[cnt], Matricola_strumenti[cnt], EsposizioniSingole[cnt]);
+                }
+                fileOutputStream.write(textContent.getBytes());
+                fileOutputStream.close();
+                pfd.close();
+            }
+            else
+                MakeToast("Nessun dato da salvare");
+//            MakeToast("File salvato");
+        }
+        catch
+        (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            MakeToast("File non salvato");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            MakeToast("File non salvato");
+        }
+    }
+
+    private void ReadFile(String fileName, String Data)
+    {
+
     }
 
 }
