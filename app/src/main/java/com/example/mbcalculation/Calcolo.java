@@ -40,6 +40,7 @@ public class Calcolo extends AppCompatActivity
     static final int MB_CALC = 0;
     static final int CI_CALC = 1;
     static final int CI_NS_CALC = 2;
+    static final int MAX_DIGITS = 1;
 
     private static final int CREATE_FILE_REQUEST_CODE = 40;
     private static final int OPEN_FILE_REQUEST_CODE = 41;
@@ -359,11 +360,11 @@ public class Calcolo extends AppCompatActivity
             maxXYZText[3] = findViewById(R.id.max_xyz_avg);
             maxXYZText[4] = findViewById(R.id.dev_std);
             GetAllVariables();
-            maxXYZText[0].setText(FormatFlToStr(x_max[N_StrumentiAttuali], 2));
-            maxXYZText[1].setText(FormatFlToStr(y_max[N_StrumentiAttuali], 2));
-            maxXYZText[2].setText(FormatFlToStr(z_max[N_StrumentiAttuali], 2));
-            maxXYZText[3].setText(FormatFlToStr(xyz_max_avg_dev_std[N_StrumentiAttuali], 2));
-            maxXYZText[4].setText(FormatFlToStr(dev_std_max_avg[N_StrumentiAttuali], 2));
+            maxXYZText[0].setText(FormatFlToStr(x_max[N_StrumentiAttuali], MAX_DIGITS));
+            maxXYZText[1].setText(FormatFlToStr(y_max[N_StrumentiAttuali], MAX_DIGITS));
+            maxXYZText[2].setText(FormatFlToStr(z_max[N_StrumentiAttuali], MAX_DIGITS));
+            maxXYZText[3].setText(FormatFlToStr(xyz_max_avg_dev_std[N_StrumentiAttuali], MAX_DIGITS));
+            maxXYZText[4].setText(FormatFlToStr(dev_std_max_avg[N_StrumentiAttuali], MAX_DIGITS));
         }
     }
 
@@ -650,8 +651,9 @@ public class Calcolo extends AppCompatActivity
                 textContent = "NOME,TIPO,MODELLO,MATRICOLA,ESPOSIZIONE_SINGOLA\n";
                 for (int cnt = 0; cnt < N_StrumentiAttuali + 1; cnt++)
                 {
+                    String EspSing = FormatFlToStr(EsposizioniSingole[cnt], MAX_DIGITS);
                     textContent += String.format("%s,%s,%s,%s,%s\n", Nome_strumenti[cnt], Tipo_strumenti[cnt],
-                            Modello_strumenti[cnt], Matricola_strumenti[cnt], EsposizioniSingole[cnt]);
+                            Modello_strumenti[cnt], Matricola_strumenti[cnt], EspSing);
                 }
                 fileOutputStream.write(textContent.getBytes());
                 fileOutputStream.close();

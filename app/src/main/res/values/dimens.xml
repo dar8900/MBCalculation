@@ -8,4 +8,5 @@
     <dimen name="strumento_text_font">25dp</dimen>
     <dimen name="cell_xyz_width">85dp</dimen>
     <dimen name="cell_xyz_high">70dp</dimen>
+    <dimen name="cell_data_stat">20dp</dimen>
 </resources>

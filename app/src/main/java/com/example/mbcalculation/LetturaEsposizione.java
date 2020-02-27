@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class LetturaEsposizione extends AppCompatActivity
 {
+    static final int MAX_DIGITS = 2;
     private TextView mostraEsposizione;
     private float Esposizione;
     private int TipoEsp = 2;
@@ -31,110 +32,117 @@ public class LetturaEsposizione extends AppCompatActivity
 
         TextView TitoloEsp = findViewById(R.id.titolo_mostra_esposizione);
         TextView TestoEsp = findViewById(R.id.mostra_esposizione);
-        switch(TipoEsp)
+        if(Float.isInfinite(Esposizione) || Float.isNaN(Esposizione))
         {
-            case 0:
-                TitoloEsp.setText("ESPOSIZIONE SINGOLA");
-                TestoEsp.setText(FormatFlToStr(Esposizione, 2) + " m/s^2");
-                if(TipoCalcolo == 0)
-                {
-                    if (Esposizione < 2.5)
+            TestoEsp.setText("Esposizione non calcolabile");
+        }
+        else
+        {
+            switch (TipoEsp)
+            {
+                case 0:
+                    TitoloEsp.setText("ESPOSIZIONE SINGOLA");
+                    TestoEsp.setText(FormatFlToStr(Esposizione, MAX_DIGITS) + " m/s^2");
+                    if (TipoCalcolo == 0)
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        if (Esposizione < 2.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 2.5 && Esposizione <= 5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
-                    else if (Esposizione >= 2.5 && Esposizione <= 5)
+                    else if (TipoCalcolo == 1)
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
-                    }
-                    else
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
-                    }
-                }
-                else if(TipoCalcolo == 1)
-                {
-                    if (Esposizione < 0.5)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
-                    }
-                    else if (Esposizione >= 0.5 && Esposizione <= 1)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
-                    }
-                    else
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
-                    }
-                }
-                else
-                {
-                    if (Esposizione < 0.5)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
-                    }
-                    else if (Esposizione >= 0.5 && Esposizione <= 1)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        if (Esposizione < 0.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 0.5 && Esposizione <= 1)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
                     else
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        if (Esposizione < 0.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 0.5 && Esposizione <= 1)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
-                }
-                break;
-            case 1:
-                TitoloEsp.setText("ESPOSIZIONE TOTALE");
-                TestoEsp.setText(FormatFlToStr(Esposizione, 2) + " m/s^2");
-                if(TipoCalcolo == 0)
-                {
-                    if (Esposizione < 2.5)
+                    break;
+                case 1:
+                    TitoloEsp.setText("ESPOSIZIONE TOTALE");
+                    TestoEsp.setText(FormatFlToStr(Esposizione, MAX_DIGITS) + " m/s^2");
+                    if (TipoCalcolo == 0)
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        if (Esposizione < 2.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 2.5 && Esposizione <= 5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
-                    else if (Esposizione >= 2.5 && Esposizione <= 5)
+                    else if (TipoCalcolo == 1)
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        if (Esposizione < 0.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 0.5 && Esposizione <= 1)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
                     else
                     {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        if (Esposizione < 0.5)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
+                        }
+                        else if (Esposizione >= 0.5 && Esposizione <= 1)
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        }
+                        else
+                        {
+                            TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
                     }
-                }
-                else if(TipoCalcolo == 1)
-                {
-                    if (Esposizione < 0.5)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
-                    }
-                    else if (Esposizione >= 0.5 && Esposizione <= 1)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
-                    }
-                    else
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
-                    }
-                }
-                else
-                {
-                    if (Esposizione < 0.5)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.green));
-                    }
-                    else if (Esposizione >= 0.5 && Esposizione <= 1)
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.yellow));
-                    }
-                    else
-                    {
-                        TestoEsp.setBackgroundColor(getResources().getColor(R.color.red));
-                    }
-                }
-                break;
-            default:
-                TitoloEsp.setText("NO DATA");
-                TestoEsp.setText("");
-                break;
+                    break;
+                default:
+                    TitoloEsp.setText("NO DATA");
+                    TestoEsp.setText("");
+                    break;
+            }
         }
     }
 
